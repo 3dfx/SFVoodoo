@@ -13,26 +13,32 @@ import Haupt.Main;
  * @author 3dfx
  */
 
+@SuppressWarnings("ForLoopReplaceableByForEach")
 public class CreateRename extends SFV implements ICreate {
 	public CreateRename() {
 		super();
 	}
-	public int create() throws FileNotFoundException, IOException {
-
-		for (int i = 0; i < files.length; i++)
+	public int create() throws IOException {
+		for (int i = 0; i < files.length; i++) {
 			calculate(files[i]);
+		}
 
 		return 0;
 	}
 
-	private void calculate(String path) throws FileNotFoundException, IOException {
+	private void calculate(String path) throws IOException {
 		String[] nfiles = new String[1];
 
 		File file = new File(path);
-		if (file.isDirectory())
+		if (file.isDirectory()) {
 			nfiles = file.list();
-		else
+		} else {
 			nfiles[0] = file.toString();
+		}
+
+		if (nfiles == null) {
+			return;
+		}
 
 		for (int i = 0; i < nfiles.length; i++) {
 			if (file.exists()) {
@@ -42,9 +48,9 @@ public class CreateRename extends SFV implements ICreate {
 					for (j = 0; j < nfiles.length; j++) {
 						nfiles[j] = path + File.separator + nfiles[j];
 						file = new File(nfiles[j]);
-						if (file.isDirectory())
+						if (file.isDirectory()) {
 							calculate(file.toString() + File.separator);
-						else if(!reached) {
+						} else if (!reached) {
 							i = j;
 							reached = true;
 						}
@@ -62,16 +68,18 @@ public class CreateRename extends SFV implements ICreate {
 					echo("\t" + file.getName().toString() + " " + res);
 					String tmpName = "";
 					if (new File(path).isDirectory()) {
-						if (sfv_path != path)
+						if (path.equals(sfv_path)) {
 							tmpName = path;
-						if (!path.endsWith(File.separator))
+						}
+						if (!path.endsWith(File.separator)) {
 							tmpName += File.separator;
+						}
 
 						tmpName = tmpName.replace(sfv_path, "");
 						tmpName += file.getName().toString();
-					}
-					else
+					} else {
 						tmpName = getFileName(file.toString());
+					}
 
 					File tmp = getRenamedName(file, res);
 					file.renameTo(tmp);

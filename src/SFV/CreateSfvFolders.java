@@ -12,9 +12,10 @@ public class CreateSfvFolders extends SFV implements ICreate {
 	public CreateSfvFolders() {
 		super();
 	}
-	public int create() throws FileNotFoundException, IOException {
+
+	public int create() throws IOException {
 		ICreate oSfv = null;
-		String tmp[] = null;
+		String[] tmp = null;
 		int res = 0;
 
 		for (int i = 0; i < files.length; i++) {

@@ -22,20 +22,15 @@ public class RenameFromSfv extends SFV implements ICheck {
 		super(filename);
 	}
 
-	public int check() throws FileNotFoundException, IOException {
-		int crc_ok = 0, crc_fail = 0, crc_miss = 0, sl = 0;
-
-		String file_name = "", file_crc = "", checked_crc = "", tmp = "";
-		double MB = 0;
-		long starto = System.currentTimeMillis();
+	public int check() throws IOException {
+		String file_name = "", file_crc = "", tmp = "";
 
 		File file = new File(sfv_file);
 
 		if (!file.isFile()) {
 			System.err.print("ERROR:\t\"" + file + "\" not found!");
 			return -1;
-		}
-		else {
+		} else {
 			int i = 1;
 			String folder = getPathName(file.getPath().toString()) + File.separator;
 
@@ -65,8 +60,9 @@ public class RenameFromSfv extends SFV implements ICheck {
 
 			File path = new File(folder);
 			String[] nfiles = null;
-			if (path.isDirectory())
+			if (path.isDirectory()) {
 				nfiles = path.list();
+			}
 
 			int rmd = 0;
 			for (i = 0; i < nfiles.length; i++) {
@@ -85,8 +81,9 @@ public class RenameFromSfv extends SFV implements ICheck {
 						if (file.isFile()) {
 							file.renameTo(new File(folder + sfvList.get(pos)));
 							echo("renaming: \"" + nfiles[i] + "\" => \"" + sfvList.get(pos) + "\"");
-							if (rmd == 0)
+							if (rmd == 0) {
 								out.write("@echo off\ncls\necho SFVoodoo undo script...\n\n");
+							}
 
 							out.write("echo renaming \"" + sfvList.get(pos) + "\" to \"" + nfiles[i] + "\"\n");
 							out.write("rename \"" + sfvList.get(pos) + "\" \"" + nfiles[i] + "\"\n\n");

@@ -9,16 +9,17 @@ package SFV;
 
 public class SfvObjFab {
 	public static ICreate get(String type) {
+		ICreate result = null;
 		if (type.equalsIgnoreCase("create")) {
-			return new CreateSfv();
+			result = new CreateSfv();
 		}
 		else if (type.equalsIgnoreCase("folders")) {
-			return new CreateSfvFolders();
+			result = new CreateSfvFolders();
 		}
 		else if (type.equalsIgnoreCase("rename")) {
-			return new CreateRename();
+			result = new CreateRename();
 		}
 
-		return null;
+		return result;
 	}
 }

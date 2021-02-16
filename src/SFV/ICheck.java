@@ -1,5 +1,5 @@
 package SFV;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 
 /*
@@ -10,5 +10,5 @@ import java.io.IOException;
  */
 
 public interface ICheck {
-	public int check() throws FileNotFoundException, IOException;
+	public int check() throws IOException;
 }
