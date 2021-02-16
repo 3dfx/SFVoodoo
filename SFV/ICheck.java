@@ -10,5 +10,5 @@ import java.io.IOException;
  */
 
 public interface ICheck {
-    public int check() throws FileNotFoundException, IOException;
+	public int check() throws FileNotFoundException, IOException;
 }

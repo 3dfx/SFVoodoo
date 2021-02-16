@@ -9,24 +9,24 @@ import java.io.*;
  */
 
 public class CreateSfvFolders extends SFV implements ICreate {
-    public CreateSfvFolders() {
-        super();
-    }
+	public CreateSfvFolders() {
+		super();
+	}
 	public int create() throws FileNotFoundException, IOException {
-	    ICreate oSfv = null;
-	    String tmp[] = null;
-	    int res = 0;
-	    
+		ICreate oSfv = null;
+		String tmp[] = null;
+		int res = 0;
+
 		for (int i = 0; i < files.length; i++) {
-		    tmp = new String[1];
-		    System.arraycopy(files, i, tmp, 0, 1);
-		    
-		    oSfv = new CreateSfv();
-		    ((SFV) oSfv).set_files(tmp);
-		    ((SFV) oSfv).set_comment(comment);
-		    res += oSfv.create();
+			tmp = new String[1];
+			System.arraycopy(files, i, tmp, 0, 1);
+
+			oSfv = new CreateSfv();
+			((SFV) oSfv).set_files(tmp);
+			((SFV) oSfv).set_comment(comment);
+			res += oSfv.create();
 		}
-		
+
 		return res;
 	}
 }
