@@ -124,9 +124,14 @@ public class CreateSfv extends SFV implements ICreate {
 			} // if (file.isDirectory())
 
 			file = new File(nfiles[i]);
-			if (file.isFile() && !file.toString().endsWith(".sfv") && !file.toString().equalsIgnoreCase("thumbs.db")) {
+			if (file.isFile() && !isFileIgnored(file)) {
 				CRC chk = new CRC(nfiles[i], BUF_SIZE);
-				String res = chk.getCRC();
+				String res = "";
+				try {
+					res = chk.getCRC();
+				} catch (IOException e) {
+					res = "IO_ERROR";
+				}
 				chk = null;
 				if (!res.equalsIgnoreCase(Main.ER_CRC)) {
 					echo("\t" + fixOutputLength(file.getName().toString(), 50) + " " + res);

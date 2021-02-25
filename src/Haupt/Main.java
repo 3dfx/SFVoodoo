@@ -7,14 +7,20 @@ import SFV.*;
  */
 /**
  * @author 3dfx
- */
 
++========================+
+|     SFVoodoo v1.xx     |
++========================+
+ */
 public final class Main {
 	private static void echo(String str) { System.out.println(str); }
-	public static final String VERSION = "SFVoodoo v1.2.0";
-	public static final String TITLE = "+========================+\n|	" + VERSION + "	|\n+========================+\n";
+	public static final String VERSION = "SFVoodoo v1.25";
+	public static final String TITLE = "+========================+\n|     " + VERSION + "     |\n+========================+\n";
 	public static final String ER_CRC = "00000000";
-	public static final int BUFFER = 1024;
+
+	public static final int BUF_SIZE_DEFAULT = 4096;
+
+	public int BUF_SIZE = BUF_SIZE_DEFAULT;
 
 	public static void main (String[] args) {
 		Main app = new Main();
@@ -66,7 +72,7 @@ public final class Main {
 					System.out.print("Press Enter to start!");
 					TextIO.getln();
 				}
-				System.out.println();
+				echo("");
 
 				if (args.length > 1) {
 					String[] tmp = new String[args.length-1];
@@ -79,6 +85,7 @@ public final class Main {
 					res = oSfv.create();
 				} catch (IOException e) {
 					e.printStackTrace();
+					res = -1;
 				}
 			} // create, rename, folders
 			else {
@@ -86,41 +93,36 @@ public final class Main {
 
 				if (args[0].equalsIgnoreCase("sfvin")) {
 					oSfv = new RenameFromSfv(args[1]);
-					((SFV) oSfv).set_bufsize(BUFFER);
+
 				} // sfvin
 				else {
 					boolean mode = args[0].endsWith(".sfv");
 
 					if (mode) {
 						oSfv = new CheckSfv(args[0]);
+
 					} else {
 						oSfv = new CheckFile();
-					}
-
-					((SFV) oSfv).set_bufsize(BUFFER);
-
-					if (!mode) {
-						String[] tmp = new String[args.length];
-						System.arraycopy(args, 0, tmp, 0, args.length);
-
-						((SFV) oSfv).set_files(tmp);
+						((SFV) oSfv).set_files(args);
 					}
 				} // check
+
+				((SFV) oSfv).set_bufsize(BUF_SIZE);
 
 				try {
 					res = oSfv.check();
 				} catch (IOException e) {
 					e.printStackTrace();
+					res = -1;
 				}
 
-				if (res != -1) {
-					int ch = '0';
-					while (ch == '0') {
-						try {
-							ch = System.in.read();
-						} catch (IOException e) {
-							System.exit(0);
-						}
+				int ch = '0';
+				while (ch == '0') {
+					try {
+						ch = System.in.read();
+					} catch (IOException e) {
+						res = -1;
+						break;
 					}
 				}
 			}

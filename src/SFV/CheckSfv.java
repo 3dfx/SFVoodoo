@@ -54,7 +54,12 @@ public class CheckSfv extends SFV implements ICheck {
 						MB += cur_file.length();
 
 						CRC chk = new CRC(cur_file, BUF_SIZE);
-						String res = chk.getCRC();
+						String res = "";
+						try {
+							res = chk.getCRC();
+						} catch (IOException e) {
+							res = "IO_ERROR";
+						}
 
 						if (checked_crc.equalsIgnoreCase(res)) {
 							echo("\tCRC OK\t\t[" + res + "]\n");

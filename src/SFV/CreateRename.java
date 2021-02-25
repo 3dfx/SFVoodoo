@@ -26,7 +26,7 @@ public class CreateRename extends SFV implements ICreate {
 		return 0;
 	}
 
-	private void calculate(String path) throws IOException {
+	private void calculate(String path) {
 		String[] nfiles = new String[1];
 
 		File file = new File(path);
@@ -60,9 +60,14 @@ public class CreateRename extends SFV implements ICreate {
 			}
 
 			file = new File(nfiles[i]);
-			if (file.isFile() && !file.toString().endsWith(".sfv") && !file.toString().equalsIgnoreCase("thumbs.db")) {
+			if (file.isFile() && !isFileIgnored(file)) {
 				CRC chk = new CRC(nfiles[i], BUF_SIZE);
-				String res = chk.getCRC();
+				String res = "";
+				try {
+					res = chk.getCRC();
+				} catch (IOException e) {
+					res = "IO_ERROR";
+				}
 				chk = null;
 				if (!res.equalsIgnoreCase(Main.ER_CRC)) {
 					echo("\t" + file.getName().toString() + " " + res);
