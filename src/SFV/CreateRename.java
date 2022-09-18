@@ -6,10 +6,8 @@ import java.io.IOException;
 import Haupt.CRC;
 import Haupt.Main;
 
-/*
- * Created on 21.09.2005
- */
 /**
+ * Created on 21.09.2005
  * @author 3dfx
  */
 
@@ -26,7 +24,7 @@ public class CreateRename extends SFV implements ICreate {
 		return 0;
 	}
 
-	private void calculate(String path) throws IOException {
+	private void calculate(String path) {
 		String[] nfiles = new String[1];
 
 		File file = new File(path);
@@ -40,6 +38,7 @@ public class CreateRename extends SFV implements ICreate {
 			return;
 		}
 
+		CRC chk = new CRC(BUF_SIZE);
 		for (int i = 0; i < nfiles.length; i++) {
 			if (file.exists()) {
 				if (file.isDirectory()) {
@@ -60,10 +59,14 @@ public class CreateRename extends SFV implements ICreate {
 			}
 
 			file = new File(nfiles[i]);
-			if (file.isFile() && !file.toString().endsWith(".sfv") && !file.toString().equalsIgnoreCase("thumbs.db")) {
-				CRC chk = new CRC(nfiles[i], BUF_SIZE);
-				String res = chk.getCRC();
-				chk = null;
+			if (file.isFile() && !isFileIgnored(file)) {
+				String res = "";
+				try {
+					res = chk.getCRC(nfiles[i]);
+				} catch (IOException e) {
+					res = "IO_ERROR";
+				}
+
 				if (!res.equalsIgnoreCase(Main.ER_CRC)) {
 					echo("\t" + file.getName().toString() + " " + res);
 					String tmpName = "";

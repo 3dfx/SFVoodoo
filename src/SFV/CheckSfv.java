@@ -1,20 +1,19 @@
 package SFV;
+
 import Haupt.CRC;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-/*
- * Created on 21.09.2005
- */
 /**
+ * Created on 21.09.2005
  * @author 3dfx
  */
 
 public class CheckSfv extends SFV implements ICheck {
+
 	public CheckSfv() {
 		super();
 	}
@@ -28,17 +27,18 @@ public class CheckSfv extends SFV implements ICheck {
 		long starto = System.currentTimeMillis();
 
 		File file = new File(sfv_file);
-
-		if (!file.isFile()) {
+		if (!file.exists() || !file.isFile()) {
 			System.err.print("ERROR:\t\"" + file + "\" not found!");
 			return -1;
+
 		} else {
 			int i = 1;
-			String folder = getPathName(file.getPath().toString()) + File.separator;
+			String folder = getPathName(file.getPath()) + File.separator;
 
 			FileReader fRead = new FileReader(file);
 			BufferedReader in = new BufferedReader(fRead);
 
+			CRC chk = new CRC(BUF_SIZE);
 			while ((tmp = in.readLine()) != null) {
 				if (!tmp.equalsIgnoreCase("") && tmp.charAt(0) != ';') {
 					int len = tmp.length();
@@ -53,8 +53,12 @@ public class CheckSfv extends SFV implements ICheck {
 						checked_crc = tmp.substring(len - 9, len).trim();
 						MB += cur_file.length();
 
-						CRC chk = new CRC(cur_file, BUF_SIZE);
-						String res = chk.getCRC();
+						String res = "";
+						try {
+							res = chk.getCRC(cur_file);
+						} catch (IOException e) {
+							res = "IO_ERROR";
+						}
 
 						if (checked_crc.equalsIgnoreCase(res)) {
 							echo("\tCRC OK\t\t[" + res + "]\n");

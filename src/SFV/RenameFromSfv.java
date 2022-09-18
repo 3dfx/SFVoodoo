@@ -1,15 +1,11 @@
 package SFV;
-import Haupt.CRC;
-import Haupt.Main;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-/*
- * Created on 21.09.2005
- */
 /**
+ * Created on 21.09.2005
  * @author 3dfx
  */
 
@@ -26,21 +22,21 @@ public class RenameFromSfv extends SFV implements ICheck {
 		String file_name = "", file_crc = "", tmp = "";
 
 		File file = new File(sfv_file);
-
-		if (!file.isFile()) {
+		if (!file.exists() || !file.isFile()) {
 			System.err.print("ERROR:\t\"" + file + "\" not found!");
 			return -1;
+
 		} else {
 			int i = 1;
-			String folder = getPathName(file.getPath().toString()) + File.separator;
+			String folder = getPathName(file.getPath()) + File.separator;
 
 			FileReader fRead = new FileReader(file);
 			BufferedReader in = new BufferedReader(fRead);
 
-			List sfvList = new ArrayList();
-			List crcList = new ArrayList();
+			List<String> sfvList = new ArrayList<>();
+			List<String> crcList = new ArrayList<>();
 
-			FileWriter fwriter = new FileWriter(new File(folder + "__undo.bat"));
+			FileWriter fwriter = new FileWriter(folder + "__undo.bat");
 			BufferedWriter out = new BufferedWriter(fwriter);
 
 			while ((tmp = in.readLine()) != null) {

@@ -1,5 +1,8 @@
 *.class
 *.project
 *.iml
-.idea
-out
+test.sfv
+/.idea
+/out
+/lib
+/_setup

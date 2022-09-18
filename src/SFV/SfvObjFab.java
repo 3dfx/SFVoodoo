@@ -1,9 +1,7 @@
 package SFV;
 
-/*
- * Created on 02.08.2006
- */
 /**
+ * Created on 02.08.2006
  * @author 3dfx
  */
 

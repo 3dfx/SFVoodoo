@@ -5,10 +5,8 @@ import Haupt.CRC;
 import java.io.File;
 import java.io.IOException;
 
-/*
- * Created on 21.09.2005
- */
 /**
+ * Created on 21.09.2005
  * @author 3dfx
  */
 
@@ -32,7 +30,7 @@ public class CheckFile extends SFV implements ICheck {
 		return 0;
 	}
 
-	private void check_that(String path) throws IOException {
+	private void check_that(String path) {
 		String[] nfiles = new String[1];
 
 		File file = new File(path);
@@ -42,6 +40,11 @@ public class CheckFile extends SFV implements ICheck {
 			nfiles[0] = file.toString();
 		}
 
+		if (nfiles == null) {
+			return;
+		}
+
+		CRC chk = new CRC(BUF_SIZE);
 		for (int i = 0; i < nfiles.length; i++) {
 			if (!file.exists()) {
 				break;
@@ -54,7 +57,7 @@ public class CheckFile extends SFV implements ICheck {
 					nfiles[j] = path + File.separator + nfiles[j];
 					file = new File(nfiles[j]);
 					if (file.isDirectory())
-						check_that(file.toString() + File.separator);
+						check_that(file + File.separator);
 					else if(!reached) {
 						i = j;
 						reached = true;
@@ -64,7 +67,7 @@ public class CheckFile extends SFV implements ICheck {
 			} // if (file.isDirectory())
 
 			file = new File(nfiles[i]);
-			if (file.isFile() && !file.toString().endsWith(".sfv") && !file.toString().equalsIgnoreCase("thumbs.db")) {
+			if (file.isFile() && !isFileIgnored(file)) {
 				char mch_op = 0, mch_ed = 0;
 				if (nfiles[i].matches(".*\\[[A-Fa-f0-9]{8}\\].*")) {
 					mch_op = '[';	mch_ed = ']';
@@ -90,8 +93,12 @@ public class CheckFile extends SFV implements ICheck {
 					checked_crc = fName.substring(pos+1, pos+9);
 					// CRC des zu checkenden files holen
 
-					CRC chk = new CRC(nfiles[i], BUF_SIZE);
-					String res = chk.getCRC(); // CRC errechnen
+					String res = "";
+					try {
+						res = chk.getCRC(nfiles[i]);
+					} catch (IOException e) {
+						res = "IO_ERROR";
+					}
 
 					if (checked_crc.equalsIgnoreCase(res)) {
 						echo("\tCRC OK\t\t[" + res + "]\n");

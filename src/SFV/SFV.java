@@ -1,28 +1,28 @@
 package SFV;
 
+import Haupt.Main;
+
 import java.io.File;
 
-/*
- * Created on 09.12.2004
- */
 /**
+ * Created on 09.12.2004
  * @author 3dfx
  */
 
 public class SFV {
 	protected static void echo(String str) { System.out.println(str); }
 
-	String sfv_file;
-	String sfv_path;
-	String[] files;
-	String mode;
-	String comment;
+	protected String sfv_file;
+	protected String sfv_path;
+	protected String[] files;
+	protected String mode;
+	protected String comment;
 
-	int crc_ok = 0, crc_fail = 0, crc_miss = 0, no_crc = 0, sl = 0, count = 1;;
-	String checked_crc = "";
-	double MB = 0;
+	protected int crc_ok = 0, crc_fail = 0, crc_miss = 0, no_crc = 0, sl = 0, count = 1;;
+	protected String checked_crc = "";
+	protected double MB = 0;
 
-	int BUF_SIZE = 1024;
+	protected int BUF_SIZE = Main.BUF_SIZE_DEFAULT;
 
 	public SFV () {
 		mode = "";
@@ -34,15 +34,19 @@ public class SFV {
 	public SFV (String filename) {
 		mode = "";
 		comment = "";
+		setPathAndFile(filename);
+	}
+
+	public void set_files(String... files) { this.files = files; }
+	public void set_mode(String mode) { this.mode = mode; }
+	public void set_sfv(String sfv) { setPathAndFile(sfv); }
+	public void set_comment(String comment) { this.comment = comment; }
+	public void set_bufsize(int buf) { this.BUF_SIZE = buf; }
+
+	private void setPathAndFile(String filename) {
 		this.sfv_file = filename;
 		this.sfv_path = getPathName(filename);
 	}
-
-	public void set_files(String[] files) { this.files = files; }
-	public void set_mode(String mode) { this.mode = mode; }
-	public void set_sfv(String sfv) { this.sfv_file = sfv; }
-	public void set_comment(String comment) { this.comment = comment; }
-	public void set_bufsize(int buf) { this.BUF_SIZE = buf; }
 
 	protected File getRenamedName(File file, String CRC) {
 		String fName = file.toString();
@@ -143,11 +147,11 @@ public class SFV {
 			sl = 3;
 		}
 
-		echo("+=======================" + (sl != 0 ? "========" : "") + "+");
+		echo("=========================" + (sl != 0 ? "========" : ""));
 		echo("  Duration : " + duration + " secs");
 		echo("  Size     : " + size + " MB");
 		echo("  Speed    : " + speed + " MB/s");
-		echo("+-----------------------" + (sl != 0 ? "--------" : "") + "+");
+		echo("-------------------------" + (sl != 0 ? "--------" : ""));
 		if (no_crc > 0) {
 			echo("  !CRC     : " + no_crc);
 		}
@@ -158,9 +162,14 @@ public class SFV {
 			echo("  FAIL     : " + crc_fail);
 		}
 		echo("  OK       : " + crc_ok);
-		echo("+-----------------------" + (sl != 0 ? "--------" : "") + "+");
+		echo("-------------------------" + (sl != 0 ? "--------" : ""));
 		echo("  TOTAL    : " + sum);
-		echo("+=======================" + (sl != 0 ? "========" : "") + "+");
+		echo("=========================" + (sl != 0 ? "========" : ""));
+	}
+
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	protected boolean isFileIgnored(File file) {
+		return file.toString().endsWith(".sfv") || file.toString().equalsIgnoreCase("thumbs.db") || file.toString().equalsIgnoreCase(".DS_Store");
 	}
 
 	public int getTotal() {

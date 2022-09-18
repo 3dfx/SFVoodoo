@@ -2,75 +2,104 @@ package Haupt;
 import java.io.*;
 import java.util.zip.CRC32;
 
-/*
- * Created on 09.12.2004
- *
- */
 /**
+ * Created on 09.12.2004
  * @author 3dfx
  */
 
 public class CRC {
-	int BUF_SIZE;
+	public static final int BUF_SIZE_DEFAULT = Main.BUF_SIZE_DEFAULT;
+	protected int BUF_SIZE = BUF_SIZE_DEFAULT;
+//	String crc_val = Main.ER_CRC;
+
+	private static final StringBuilder CRC_VAL = new StringBuilder(8);
+	private static final CRC32 CRC_32 = new CRC32();
+
+	private static BufferedInputStream inputStream = null;
+	private static byte[] read_buffer = null;
+
 	String filename;
 	File cfile;
-	String crc_val;
+
+	public CRC() {
+	}
+
+	public CRC(int buffer) {
+		this.BUF_SIZE = buffer;
+	}
+
+	public CRC(File file) {
+		this.cfile = file;
+	}
 
 	public CRC(File filename, int buffer) {
 		this.cfile = filename;
 		BUF_SIZE = buffer;
-		crc_val = Main.ER_CRC;
+	}
+
+	public CRC(String filename) {
+		this.filename = filename;
 	}
 
 	public CRC(String filename, int buffer) {
 		this.filename = filename;
 		BUF_SIZE = buffer;
-		crc_val = Main.ER_CRC;
+	}
+
+	public String getCRC(String filename) throws IOException {
+		this.filename = filename;
+		return getCRC();
+	}
+
+	public String getCRC(File file) throws IOException {
+		this.cfile = file;
+		return getCRC();
 	}
 
 	public String getCRC() throws IOException {
 		File file = (cfile == null ? new File(filename) : cfile);
-
-		if (!file.isFile()) {
+		if (!file.exists() || !file.isFile()) {
 			return Main.ER_CRC;
 		}
 
-		CRC32 crc = new CRC32();
-		byte[] buf = new byte[BUF_SIZE];
-		FileInputStream src = new FileInputStream(file);
-		BufferedInputStream input = new BufferedInputStream(src);
+		CRC_32.reset();
+		read_buffer = new byte[BUF_SIZE];
+		inputStream = new BufferedInputStream(new FileInputStream(file));
 
 		double bytesLeft = file.length();
 		double size = bytesLeft;
 		int proz = 100;
 		double p = 0;
+
 		System.out.print("[");
-		while (input.read(buf, 0, BUF_SIZE) != -1) {
-			if (bytesLeft > buf.length) {
-				crc.update(buf);
+		while (inputStream.read(read_buffer, 0, BUF_SIZE) != -1) {
+			if (bytesLeft > read_buffer.length) {
+				CRC_32.update(read_buffer);
 			} else {
-				crc.update(buf, 0, (int) bytesLeft);
+				CRC_32.update(read_buffer, 0, (int) bytesLeft);
 			}
 
-			bytesLeft -= buf.length;
+			bytesLeft -= read_buffer.length;
 			p = (double)(bytesLeft / size * 100.00);
 			if (p < proz && proz > 0) {
 				System.out.print("|");
 				proz -= 10;
 			}
 		}
+		inputStream.close();
+
 		while (proz > 0) {
 			System.out.print("|");
 			proz -= 10;
 		}
 		System.out.print("]");
 
-		crc_val = Long.toHexString(crc.getValue()).toUpperCase();
-		while (crc_val.length() < 8) {
-			crc_val = "0" + crc_val;
+		CRC_VAL.setLength(0);
+		CRC_VAL.insert(0, Long.toHexString(CRC_32.getValue()).toUpperCase());
+		while (CRC_VAL.length() < 8) {
+			CRC_VAL.insert(0, "0");
 		}
 
-		input.close();
-		return crc_val;
+		return CRC_VAL.toString();
 	}
 }

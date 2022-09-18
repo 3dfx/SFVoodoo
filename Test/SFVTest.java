@@ -1,10 +1,4 @@
-import SFV.CheckFile;
-import SFV.CheckSfv;
-import SFV.CreateSfv;
-import SFV.ICheck;
-import SFV.ICreate;
-import SFV.SFV;
-import SFV.SfvObjFab;
+import SFV.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,60 +18,83 @@ public class SFVTest {
 
     @Test
     public void testSFV() throws IOException {
-        ICheck oSfv = new CheckSfv(generateFilenames("/Test/testfile.sfv"));
+        CheckSfv oSfv = new CheckSfv(generateFilenames("\\Test\\testfile.sfv"));
         oSfv.check();
-        Assertions.assertEquals(2, ((SFV) oSfv).getCrcOk());
-        Assertions.assertEquals(1, ((SFV) oSfv).getCrcFail());
-        Assertions.assertEquals(1, ((SFV) oSfv).getCrcMiss());
-        Assertions.assertEquals(4, ((SFV) oSfv).getTotal());
+        Assertions.assertEquals(2, oSfv.getCrcOk());
+        Assertions.assertEquals(1, oSfv.getCrcFail());
+        Assertions.assertEquals(1, oSfv.getCrcMiss());
+        Assertions.assertEquals(4, oSfv.getTotal());
     }
 
     @Test
     public void testFilenameCRC() throws IOException {
-        String[] str = new String[2];
-        str[0] = generateFilenames("/Test/testfile [A458F50D].txt");
-        str[1] = generateFilenames("/Test/testfilebig [C8029225].txt");
+        String[] str = new String[3];
+        str[0] = generateFilenames("\\Test\\testfile [A458F50D].txt");
+        str[1] = generateFilenames("\\Test\\testfilebig [C8029225].txt");
+        str[2] = generateFilenames("\\Test\\testfile [GAGAGUGU].txt");
 
-        ICheck oSfv = new CheckFile();
-        ((SFV) oSfv).set_files(str);
+        CheckFile oSfv = new CheckFile();
+        oSfv.set_files(str);
 
         oSfv.check();
-        Assertions.assertEquals(2, ((SFV) oSfv).getCrcOk());
-        Assertions.assertEquals(2, ((SFV) oSfv).getTotal());
+        Assertions.assertEquals(1, oSfv.getNoCRC());
+        Assertions.assertEquals(2, oSfv.getCrcOk());
+        Assertions.assertEquals(3, oSfv.getTotal());
     }
 
     @Test
-    public void testCreate() throws IOException {
+    public void testCreateAndValidate() throws IOException {
         String testFilename = "_Test.sfv";
-        String delFile = getCurrentPath() + "/Test/" + testFilename;
+        String delFile = getCurrentPath() + "\\Test\\" + testFilename;
         File file = new File(delFile);
         if (file.isFile()) {
-            boolean res = file.delete();
-            Assertions.assertTrue(res);
+            Assertions.assertTrue(file.delete());
         }
 
-        ICreate cSfv = SfvObjFab.get("create");
-        Assertions.assertTrue(cSfv instanceof CreateSfv);
-        ((CreateSfv) cSfv).set_comment("This is a test");
+        CreateSfv cSfv = (CreateSfv) SfvObjFab.get("create");
+        Assertions.assertTrue(cSfv instanceof CreateSfv, "cSfv ist not an instance of CreateSfv");
+        cSfv.set_comment("This is a test");
 
         String[] str = new String[1];
-        str[0] = generateFilenames("/Test/testfilebig [C8029225].txt");
-        ((SFV) cSfv).set_files(str);
+        str[0] = generateFilenames("\\Test\\testfilebig [C8029225].txt");
+        cSfv.set_files(str);
 
         System.out.println("Create SFV...");
         cSfv.create();
         System.out.println("");
 
-        ICheck oSfv = new CheckSfv(generateFilenames("/Test/" + testFilename));
+        CheckSfv oSfv = new CheckSfv(generateFilenames("\\Test\\" + testFilename));
         oSfv.check();
-        Assertions.assertEquals(1, ((SFV) oSfv).getCrcOk());
-        Assertions.assertEquals(0, ((SFV) oSfv).getCrcFail());
-        Assertions.assertEquals(0, ((SFV) oSfv).getCrcMiss());
-        Assertions.assertEquals(1, ((SFV) oSfv).getTotal());
+        Assertions.assertEquals(1, oSfv.getCrcOk());
+        Assertions.assertEquals(0, oSfv.getCrcFail());
+        Assertions.assertEquals(0, oSfv.getCrcMiss());
+        Assertions.assertEquals(1, oSfv.getTotal());
 
         if (file.isFile()) {
             boolean res = file.delete();
             Assertions.assertTrue(res);
         }
+    }
+
+    @Test
+    public void testDebug() throws IOException {
+        CreateSfv cSfv = (CreateSfv) SfvObjFab.get("create");
+        Assertions.assertTrue(cSfv instanceof CreateSfv, "cSfv ist not an instance of CreateSfv");
+
+        cSfv.set_comment("This is a test");
+        cSfv.set_files("N:\\Games\\emu\\SNES\\");
+        cSfv.set_sfv(generateFilenames("\\Test\\test.sfv"));
+        System.out.println("Create SFV...");
+        cSfv.create();
+        System.out.println("");
+
+        CheckSfv oSfv = new CheckSfv(generateFilenames("\\Test\\test.sfv"));
+        oSfv.check();
+    }
+
+    @Test
+    public void testDebug2() throws IOException {
+        CheckSfv oSfv = new CheckSfv(generateFilenames("\\Test\\test.sfv"));
+        oSfv.check();
     }
 }
