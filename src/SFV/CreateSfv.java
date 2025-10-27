@@ -1,7 +1,10 @@
 package SFV;
+
+import Haupt.CRC;
+import Haupt.Main;
+
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -9,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import Haupt.CRC;
-import Haupt.Main;
 
 /**
  * Created on 21.09.2005
@@ -127,12 +127,14 @@ public class CreateSfv extends SFV implements ICreate {
 		CRC chk = new CRC(BUF_SIZE);
 		for (int i = 0; i < files.size(); i++) {
 			file = files.get(i);
-			String res = "";
-			try {
-				res = chk.getCRC(file);
-			} catch (IOException e) {
-				res = "IO_ERROR";
-			}
+            String res = CRC.getCRCFromFileName(CRC.getFileName(file.toString())); // CRC des zu checkenden files holen
+            if (res.isEmpty()) {
+                try {
+                    res = chk.getCRC(file);
+                } catch (IOException e) {
+                    res = "IO_ERROR";
+                }
+            }
 
 			if (!res.equalsIgnoreCase(Main.ER_CRC)) {
 				echo("\t" + fixOutputLength(file.getName(), 50) + " " + res);
@@ -151,7 +153,7 @@ public class CreateSfv extends SFV implements ICreate {
 						tmpName += file.getName();
 
 				} else {
-					tmpName = getFileName(file.toString());
+					tmpName = CRC.getFileName(file.toString());
 				}
 
 				out.write(tmpName + " " + res);

@@ -1,6 +1,7 @@
 package Haupt;
 import java.io.*;
 import java.util.zip.CRC32;
+import SFV.SFV;
 
 /**
  * Created on 09.12.2004
@@ -43,30 +44,31 @@ public class CRC {
 
 	public CRC(String filename, int buffer) {
 		this.filename = filename;
+        this.cfile =  new File(filename);
 		BUF_SIZE = buffer;
 	}
 
 	public String getCRC(String filename) throws IOException {
 		this.filename = filename;
-		return getCRC();
+        this.cfile =  new File(filename);
+		return this.getCRC();
 	}
 
 	public String getCRC(File file) throws IOException {
 		this.cfile = file;
-		return getCRC();
+		return this.getCRC();
 	}
 
 	public String getCRC() throws IOException {
-		File file = (cfile == null ? new File(filename) : cfile);
-		if (!file.exists() || !file.isFile()) {
+		if (!this.cfile.exists() || !this.cfile.isFile()) {
 			return Main.ER_CRC;
 		}
 
 		CRC_32.reset();
 		read_buffer = new byte[BUF_SIZE];
-		inputStream = new BufferedInputStream(new FileInputStream(file));
+		inputStream = new BufferedInputStream(new FileInputStream(this.cfile));
 
-		double bytesLeft = file.length();
+		double bytesLeft = this.cfile.length();
 		double size = bytesLeft;
 		int proz = 100;
 		double p = 0;
@@ -102,4 +104,40 @@ public class CRC {
 
 		return CRC_VAL.toString();
 	}
+
+    public static String getCRCFromFileName(String fName) {
+        String found_crc = "";
+
+        char mch_op = 0, mch_ed = 0;
+        if (fName.matches(".*\\[[A-Fa-f0-9]{8}\\].*")) {
+            mch_op = '[';	mch_ed = ']';
+        }
+        else if (fName.matches(".*\\([A-Fa-f0-9]{8}\\).*")) {
+            mch_op = '(';	mch_ed = ')';
+        }
+        else if (fName.matches(".*\\_[A-Fa-f0-9]{8}\\_.*")) {
+            mch_op = '_';	mch_ed = '_';
+        }
+
+        if (mch_op == '[' || mch_op == '(' || mch_op == '_') {
+            int pos = 0;
+            // CRC des zu checkenden files holen
+            while ((fName.charAt(pos) != mch_op) || (fName.charAt(pos+9) != mch_ed)) {
+                pos++;
+            }
+
+            found_crc = fName.substring(pos+1, pos+9);
+        }
+
+        return found_crc;
+    }
+
+    public static String getFileName(String file) {
+        int i = file.length()-1;
+        while (i > 0 && !String.valueOf(file.charAt(i)).equals(File.separator)) {
+            i--;
+        }
+
+        return file.substring(i+1, file.length());
+    }
 }

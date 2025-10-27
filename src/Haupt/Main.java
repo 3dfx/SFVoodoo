@@ -13,7 +13,7 @@ import SFV.*;
  */
 public final class Main {
 	private static void echo(String str) { System.out.println(str); }
-	public static final String VERSION = "SFVoodoo v1.28";
+	public static final String VERSION = "SFVoodoo v1.29";
 	public static final String TITLE = "+========================+\n|     " + VERSION + "     |\n+========================+\n";
 	public static final String ER_CRC = "00000000";
 
@@ -55,16 +55,16 @@ public final class Main {
 			res = -1;
 		}
 		else {
-			if (args[0].equalsIgnoreCase("create") ||
-				args[0].equalsIgnoreCase("folders") ||
-				args[0].equalsIgnoreCase("rename")) {
+			if ("create".equalsIgnoreCase(args[0]) ||
+                "folders".equalsIgnoreCase(args[0]) ||
+                "rename".equalsIgnoreCase(args[0])) {
 
 				ICreate oSfv = SfvObjFab.get(args[0]);
 				if (oSfv == null) {
 					System.exit(-1);
 				}
 
-				if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("folders")) {
+				if ("create".equalsIgnoreCase(args[0]) || "folders".equalsIgnoreCase(args[0])) {
 					System.out.print("Enter Comment: ");
 					((SFV) oSfv).set_comment(TextIO.getln());
 				} else {
@@ -90,7 +90,7 @@ public final class Main {
 			else {
 				ICheck oSfv = null;
 
-				if (args[0].equalsIgnoreCase("sfvin")) {
+				if ("sfvin".equalsIgnoreCase(args[0])) {
 					oSfv = new RenameFromSfv(args[1]);
 
 				} // sfvin

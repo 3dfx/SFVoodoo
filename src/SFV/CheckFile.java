@@ -68,30 +68,13 @@ public class CheckFile extends SFV implements ICheck {
 
 			file = new File(nfiles[i]);
 			if (file.isFile() && !isFileIgnored(file)) {
-				char mch_op = 0, mch_ed = 0;
-				if (nfiles[i].matches(".*\\[[A-Fa-f0-9]{8}\\].*")) {
-					mch_op = '[';	mch_ed = ']';
-				}
-				else if (nfiles[i].matches(".*\\([A-Fa-f0-9]{8}\\).*")) {
-					mch_op = '(';	mch_ed = ')';
-				}
-				else if (nfiles[i].matches(".*\\_[A-Fa-f0-9]{8}\\_.*")) {
-					mch_op = '_';	mch_ed = '_';
-				}
+				String fName = CRC.getFileName(nfiles[i]);
+                String checked_crc = CRC.getCRCFromFileName(fName); // CRC des zu checkenden files holen
 
-				String fName = getFileName(nfiles[i]);
 				echo((count > 9 ? "" : "0") + count + ": \"" + fName + "\"");
-				if (mch_op == '[' || mch_op == '(' || mch_op == '_') {
+				if (!checked_crc.isEmpty()) {
 					int pos = 0;
 					MB += file.length();
-
-					// CRC des zu checkenden files holen
-					while ((fName.charAt(pos) != mch_op) || (fName.charAt(pos+9) != mch_ed)) {
-						pos++;
-					}
-
-					checked_crc = fName.substring(pos+1, pos+9);
-					// CRC des zu checkenden files holen
 
 					String res = "";
 					try {

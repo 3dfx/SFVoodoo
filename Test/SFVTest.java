@@ -55,8 +55,9 @@ public class SFVTest {
         Assertions.assertTrue(cSfv instanceof CreateSfv, "cSfv ist not an instance of CreateSfv");
         cSfv.set_comment("This is a test");
 
-        String[] str = new String[1];
+        String[] str = new String[2];
         str[0] = generateFilenames("\\Test\\testfilebig [C8029225].txt");
+        str[1] = generateFilenames("\\Test\\testfilebig.txt");
         cSfv.set_files(str);
 
         System.out.println("Create SFV...");
@@ -65,10 +66,10 @@ public class SFVTest {
 
         CheckSfv oSfv = new CheckSfv(generateFilenames("\\Test\\" + testFilename));
         oSfv.check();
-        Assertions.assertEquals(1, oSfv.getCrcOk());
+        Assertions.assertEquals(2, oSfv.getCrcOk());
         Assertions.assertEquals(0, oSfv.getCrcFail());
         Assertions.assertEquals(0, oSfv.getCrcMiss());
-        Assertions.assertEquals(1, oSfv.getTotal());
+        Assertions.assertEquals(2, oSfv.getTotal());
 
         if (file.isFile()) {
             boolean res = file.delete();

@@ -19,7 +19,7 @@ public class SFV {
 	protected String comment;
 
 	protected int crc_ok = 0, crc_fail = 0, crc_miss = 0, no_crc = 0, sl = 0, count = 1;;
-	protected String checked_crc = "";
+	//protected String checked_crc = "";
 	protected double MB = 0;
 
 	protected int BUF_SIZE = Main.BUF_SIZE_DEFAULT;
@@ -76,15 +76,6 @@ public class SFV {
 		} else {
 			return file;
 		}
-	}
-
-	protected String getFileName(String file) {
-		int i = file.length()-1;
-		while (i > 0 && !String.valueOf(file.charAt(i)).equals(File.separator)) {
-			i--;
-		}
-
-		return file.substring(i+1, file.length());
 	}
 
 	protected String getPathName(String path) {

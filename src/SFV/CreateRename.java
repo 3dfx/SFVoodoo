@@ -81,7 +81,7 @@ public class CreateRename extends SFV implements ICreate {
 						tmpName = tmpName.replace(sfv_path, "");
 						tmpName += file.getName().toString();
 					} else {
-						tmpName = getFileName(file.toString());
+						tmpName = CRC.getFileName(file.toString());
 					}
 
 					File tmp = getRenamedName(file, res);
