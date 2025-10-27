@@ -1,7 +1,7 @@
 package Haupt;
+
 import java.io.*;
 import java.util.zip.CRC32;
-import SFV.SFV;
 
 /**
  * Created on 09.12.2004
