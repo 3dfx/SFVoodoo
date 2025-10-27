@@ -19,7 +19,6 @@ public class SFV {
 	protected String comment;
 
 	protected int crc_ok = 0, crc_fail = 0, crc_miss = 0, no_crc = 0, sl = 0, count = 1;;
-	//protected String checked_crc = "";
 	protected double MB = 0;
 
 	protected int BUF_SIZE = Main.BUF_SIZE_DEFAULT;
