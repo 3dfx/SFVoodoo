@@ -40,9 +40,11 @@ public class CheckSfv extends SFV implements ICheck {
 
 			CRC chk = new CRC(BUF_SIZE);
 			while ((tmp = in.readLine()) != null) {
+                file_name = "";
 				if (!tmp.equalsIgnoreCase("") && tmp.charAt(0) != ';') {
+                    tmp = tmp.trim();
 					int len = tmp.length();
-					file_name = tmp.substring(0, len - 9).trim();
+					file_name = tmp.trim().substring(0, len - 9).trim();
 					if (file_name.charAt(1) != ':') {
 						file_name = folder + file_name;
 					}
