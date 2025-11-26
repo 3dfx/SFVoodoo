@@ -1,6 +1,7 @@
 *.class
 *.project
 *.iml
+pfft
 test.sfv
 /.idea
 /out
