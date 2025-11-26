@@ -51,7 +51,7 @@ public class CheckSfv extends SFV implements ICheck {
 
 					File cur_file = new File(file_name);
 					//echo((i > 9 ? "" : "0") + i + ": \"" + fixOutputLength(CRC.getFileName(file_name), 70) + "\"");
-					echo((i > 9 ? "" : "0") + i + ": \"" + folder + CRC.getFileName(file_name) + "\"");
+					echo((i > 9 ? "" : "0") + i + ": \"" + file_name + "\"");
 					if (cur_file.exists()) {
 						checked_crc = tmp.substring(len - 9, len).trim();
 						MB += cur_file.length();
