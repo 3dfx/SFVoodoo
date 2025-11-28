@@ -21,7 +21,8 @@ public class SFV {
 	protected int crc_ok = 0, crc_fail = 0, crc_miss = 0, no_crc = 0, sl = 0, count = 1;;
 	protected double MB = 0;
 
-	protected int BUF_SIZE = Main.BUF_SIZE_DEFAULT;
+	protected static int FILENAME_LENGTH = 80;
+    protected static int BUF_SIZE = Main.BUF_SIZE_DEFAULT;
 
 	public SFV () {
 		mode = "";
@@ -40,7 +41,7 @@ public class SFV {
 	public void set_mode(String mode) { this.mode = mode; }
 	public void set_sfv(String sfv) { setPathAndFile(sfv); }
 	public void set_comment(String comment) { this.comment = comment; }
-	public void set_bufsize(int buf) { this.BUF_SIZE = buf; }
+	public void set_bufsize(int buf) { BUF_SIZE = buf; }
 
 	private void setPathAndFile(String filename) {
 		this.sfv_file = filename;

@@ -124,6 +124,8 @@ public class CreateSfv extends SFV implements ICreate {
 			calculate(dirs.get(i).toString(), out);
 		}
 
+        StringBuilder paddedString = new StringBuilder();
+        String fName = "", tabs = "";
 		CRC chk = new CRC(BUF_SIZE);
 		for (int i = 0; i < files.size(); i++) {
 			file = files.get(i);
@@ -137,7 +139,14 @@ public class CreateSfv extends SFV implements ICreate {
             }
 
 			if (!res.equalsIgnoreCase(Main.ER_CRC)) {
-				echo("\t" + fixOutputLength(file.getName(), 50) + " " + res);
+                paddedString.setLength(0);
+                paddedString.append(fixOutputLength(file.getName(), SFV.FILENAME_LENGTH));
+                while (paddedString.length() <= SFV.FILENAME_LENGTH) {
+                    paddedString.append(' ');
+                }
+
+                paddedString.insert(0, "\t").append(res);
+				echo(paddedString.toString());
 				String tmpName = "";
 				if (new File(path).isDirectory()) {
 					if (sfv_path != null && !sfv_path.equals(path)) {
