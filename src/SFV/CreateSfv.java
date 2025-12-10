@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created on 21.09.2005
@@ -77,8 +74,10 @@ public class CreateSfv extends SFV implements ICreate {
 		}
 		out.flush();
 
-		for (int i = 0; i < files.length; i++) {
-			calculate(files[i], out);
+        List<String> fileList = Arrays.asList(files);
+        fileList.sort(String::compareTo);
+		for (int i = 0; i < fileList.size(); i++) {
+			calculate(fileList.get(i), out);
 		}
 
 		out.write("; keep it easy, no stress :)\n");
@@ -119,6 +118,9 @@ public class CreateSfv extends SFV implements ICreate {
 		}
 
 		rootList = null;
+//        dirs.sort(Comparator.comparing(File::toString));
+        dirs.sort(Comparator.comparing(File::getName));
+        files.sort(Comparator.comparing(File::getName));
 
 		for (int i = 0; i < dirs.size(); i++) {
 			calculate(dirs.get(i).toString(), out);

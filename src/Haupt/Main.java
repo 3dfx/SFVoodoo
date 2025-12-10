@@ -13,7 +13,7 @@ import SFV.*;
  */
 public final class Main {
 	private static void echo(String str) { System.out.println(str); }
-	public static final String VERSION = "SFVoodoo v1.33";
+	public static final String VERSION = "SFVoodoo v1.34";
 	public static final String TITLE = "+========================+\n|     " + VERSION + "     |\n+========================+\n";
 	public static final String ER_CRC = "00000000";
 

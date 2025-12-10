@@ -83,7 +83,7 @@ public class SFVTest {
         Assertions.assertTrue(cSfv instanceof CreateSfv, "cSfv ist not an instance of CreateSfv");
 
         cSfv.set_comment("This is a test");
-        cSfv.set_files("N:\\Games\\emu\\SNES\\");
+        cSfv.set_files(generateFilenames("\\Test\\SNES\\"));
         cSfv.set_sfv(generateFilenames("\\Test\\test.sfv"));
         System.out.println("Create SFV...");
         cSfv.create();

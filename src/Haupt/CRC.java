@@ -68,10 +68,11 @@ public class CRC {
 		read_buffer = new byte[BUF_SIZE];
 		inputStream = new BufferedInputStream(new FileInputStream(this.cfile));
 
-		double bytesLeft = this.cfile.length();
-		double size = bytesLeft;
-		int proz = 100;
-		double p = 0;
+		long size = this.cfile.length();
+        long bytesLeft = size;
+        long bytesRead = 0;
+		int proz = 0;
+		long p = 0;
 
 		System.out.print("[");
 		while (inputStream.read(read_buffer, 0, BUF_SIZE) != -1) {
@@ -82,17 +83,18 @@ public class CRC {
 			}
 
 			bytesLeft -= read_buffer.length;
-			p = (double)(bytesLeft / size * 100.00);
-			if (p < proz && proz > 0) {
+            bytesRead += read_buffer.length;
+			p = (long) (((double) bytesRead / size * 100));
+			if (p == proz && proz < 100) {
 				System.out.print("|");
-				proz -= 10;
+				proz += 10;
 			}
 		}
 		inputStream.close();
 
-		while (proz > 0) {
+		while (proz < 100) {
 			System.out.print("|");
-			proz -= 10;
+			proz += 10;
 		}
 		System.out.print("]");
 
